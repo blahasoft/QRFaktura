@@ -164,6 +164,7 @@ class QRFaktura
      * Kontruktor nové platby.
      *
      * @param bool $directOutput Přepínač, zda výstup posílat přímo do prohlížeče včetně hlaviček (true) nebo pouze jako standardní výstup (false)
+     * @throws \Exception Pokud není parametr striktní TRUE nebo FALSE
      */
     public function __construct($directOutput)
     {
