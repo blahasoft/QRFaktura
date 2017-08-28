@@ -1,5 +1,5 @@
 {
-  "name": "BlahaSoft/QRFaktura",
+  "name": "blahasoft/qrfaktura",
   "type": "library",
   "description": "Generování QR faktur v PHP.",
   "keywords": [
