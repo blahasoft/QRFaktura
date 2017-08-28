@@ -4,7 +4,7 @@ Knihovna pro generování QR faktur v PHP. Generuje kód typu QR-Faktura nebo QR
 
 ## Instalace pomocí Composeru
 
-`composer require blahasoft/qrfaktura:~1.0`
+`composer require blahasoft/qrfaktura`
 
 ## Příklad
 
