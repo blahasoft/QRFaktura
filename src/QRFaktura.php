@@ -11,7 +11,7 @@ require_once('phpqrcode/qrlib.php');
  * Pro PHP 5.4 a vyssi
  *
  * @package BlahaSoft\QRFaktura
- * @since   1.1
+ * @since   1.0
  * @author  Jan Bláha <info@blahasoft.cz>
  * @copyright Copyright (c) 2017 Jan Bláha <info@blahasoft.cz>
  * @link    https://qrkody.eu
