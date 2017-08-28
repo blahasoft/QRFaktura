@@ -1,0 +1,27 @@
+{
+  "name": "BlahaSoft/QRFaktura",
+  "type": "library",
+  "description": "Generování QR faktur v PHP.",
+  "keywords": [
+    "php",
+    "qr",
+    "platba",
+    "faktura"
+  ],
+  "homepage": "https://qrkody.eu",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Jan Bláha",
+      "email": "blahasoft@blahasoft.cz"
+    }
+  ],
+  "require": {
+    "php": ">=5.4.0"
+  },
+  "autoload": {
+    "psr-4": {
+      "BlahaSoft\\QRFaktura\\": "src/"
+    }
+  }
+}
