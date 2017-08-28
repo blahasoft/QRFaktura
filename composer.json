@@ -1,14 +1,14 @@
 {
   "name": "blahasoft/qrfaktura",
   "type": "library",
-  "description": "Generování QR faktur v PHP.",
+  "description": "Generování QR kódů pro faktury v PHP.",
   "keywords": [
     "php",
     "qr",
     "platba",
     "faktura"
   ],
-  "homepage": "https://qrkody.eu",
+  "homepage": "https://github.com/blahasoft/QRFaktura",
   "license": "MIT",
   "authors": [
     {
