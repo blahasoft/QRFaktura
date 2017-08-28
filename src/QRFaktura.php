@@ -163,18 +163,23 @@ class QRFaktura
     /**
      * Kontruktor nové platby.
      *
-     * @param null $directOutput
+     * @param bool $directOutput Přepínač, zda výstup posílat přímo do prohlížeče včetně hlaviček (true) nebo pouze jako standardní výstup (false)
      */
     public function __construct($directOutput)
     {
-        $this->isDirectOutput = $directOutput;
+        if ($directOutput === true || $directOutput === false) {
+            $this->isDirectOutput = $directOutput;
+        }
+        else {
+            throw new \Exception('Parametr $directOutput v konstruktoru musí být striktní TRUE nebo FALSE');
+        }
     }
 
     /**
-     * precteni parametru z pole
+     * Načtení parametrů z pole
      *
      * @param array $arr pole Qr parametru, pravdepodobne $_GET nebo jine URL-decoded pole
-     * @return mixed Vygenerovany QR kod nebo chybovou strunturu
+     * @return mixed QR kód nebo chybová struktura. Dle parametru v konstruktoru posílá výstup včetně HTTPS hlaviček nebou pouze stadardní výstup
      */
     public function getQRCode($arr)
     {
