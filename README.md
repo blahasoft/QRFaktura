@@ -1,6 +1,6 @@
 # QR Faktura
 
-Knihovna pro generování QR faktur v PHP. Generuje kód typu QR-Faktura nebo QR-Platba+faktura.
+PHP knihovna pro generování QR kódů pro faktury. Generuje kód typu QR-Faktura nebo QR-Platba+faktura.
 
 ## Instalace pomocí Composeru
 
