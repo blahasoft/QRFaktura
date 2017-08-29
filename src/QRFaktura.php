@@ -126,6 +126,16 @@ class QRFaktura
     private $outputFormat = 0;
 
     /**
+     * branding QR kódu (nápis QRFaktura nebo QRPlatba+F). Defaultne se nápis na obrázek přidává.
+     */
+    private $branding = true;
+
+    /**
+     * kompaktni format bez diakritiky. Defaultne se diakritika zachovava.
+     */
+    private $compress = false;
+
+    /**
      * velikost kazdeho ctverce v QR kodu v px
      */
     private $QRSquareSize = 4;
@@ -184,6 +194,15 @@ class QRFaktura
      */
     public function getQRCode($arr)
     {
+        //tento parametr musime nacist prvni, protoze podle nej se rovnou meni diakritika
+        //bez diakritiky
+        if (trim($arr['compress']) == '1') {
+            $this->compress = true;
+        }
+        else {
+            $this->compress = false;
+        }
+
         $this->setText(trim($arr['ID']), 'ID', true, 40, false);
         $this->setAmount(trim($arr['AM']), 'AM', true, 18, 2, false);
         $this->setDate(trim($arr['DD']), 'DD', true, false);
@@ -270,6 +289,15 @@ class QRFaktura
         else {
             $this->outputFormat = 0; //obrazek
         }
+
+        //popis QR kódu
+        if (trim($arr['branding']) == '0') {
+            $this->branding = false;
+        }
+        else {
+            $this->branding = true;
+        }
+
 
         //velikost pixelu v qr obrazku
         $qrpixelsize = trim($arr['qrpixelsize']);
@@ -985,27 +1013,25 @@ class QRFaktura
 
     /**
      * Odstranění diaktitiky.
-     * Aktuálně se nepoužívá
      *
      * @param string $string Řetězec s diakritikou
      * @return string Řetězec bez diakritiky
      */
     private function stripDiacritics($string)
     {
-        //diakritiku prozatim neorezavame
-        /*
-        $string = str_replace(
-            array('ě','š','č','ř','ž','ý','á','í','é','ú','ů','ó','ť','ď','ľ','ň','ŕ','â','ă','ä','ĺ','ć','ç','ę','ë','î','ń','ô','ő','ö','ů','ű','ü','*',),
-            array('e','s','c','r','z','y','a','i','e','u','u','o','t','d','l','n','a','a','a','a','a','a','c','e','e','i','n','o','o','o','u','u','u','',),
-            $string
-        );
-        $string = str_replace(
-            array('Ě','Š','Č','Ř','Ž','Ý','Á','Í','É','Ú','Ů','Ó','Ť','Ď','Ľ','Ň','Ä','Ć','Ë','Ö','Ü',),
-            array('E','S','C','R','Z','Y','A','I','E','U','U','O','T','D','L','N','A','C','E','O','U',),
-            $string
-        );
-        */
-
+        //pokud je pozadavek na kompresi s oriznutim diakritiky
+        if ($this->compress) {
+            $string = str_replace(
+                array('ě','š','č','ř','ž','ý','á','í','é','ú','ů','ó','ť','ď','ľ','ň','ŕ','â','ă','ä','ĺ','ć','ç','ę','ë','î','ń','ô','ő','ö','ů','ű','ü','*',),
+                array('e','s','c','r','z','y','a','i','e','u','u','o','t','d','l','n','a','a','a','a','a','a','c','e','e','i','n','o','o','o','u','u','u','',),
+                $string
+            );
+            $string = str_replace(
+                array('Ě','Š','Č','Ř','Ž','Ý','Á','Í','É','Ú','Ů','Ó','Ť','Ď','Ľ','Ň','Ä','Ć','Ë','Ö','Ü',),
+                array('E','S','C','R','Z','Y','A','I','E','U','U','O','T','D','L','N','A','C','E','O','U',),
+                $string
+            );
+        }
         return $string;
     }
 
@@ -1057,34 +1083,41 @@ class QRFaktura
 
         //ulozime obrazek do docasneho souboru
         \QRcode::png((string)$this, $filename, QR_ECLEVEL_L, $this->QRSquareSize, 8);
-
-        //napiseme do obrazku typ QR kodu
-        $im = imagecreatefrompng($filename);
         */
 
-        /* --- ukladani obrazku do streamu bez zapisu do docasneho souboru  */
-        ob_start();
-        \QRcode::png((string)$this, null/*do streamu*/, QR_ECLEVEL_L/*uroven korence chyb*/, $this->QRSquareSize/*velikost pixelu*/, 8/*velikost okraje*/);
-        $imageString = ob_get_contents();
-        ob_end_clean();
-        $im = imagecreatefromstring($imageString);
-        $size = getimagesizefromstring($imageString);
-        $black = imagecolorallocate($im, 0, 0, 0);
+        $imageStringFinal = null;
+        if ($this->branding)
+        {
+            //napiseme do obrazku typ QR kodu
 
-        // Print Text On Image
-        //putenv('GDFONTPATH=' . realPath('fonts'));
-        //text se pise do spodniho okraje kousek od leveho spodniho rohu
-        imagettftext($im, $this->QRSquareSize*3.7/*fontsize*/, 0, $size[0]/6/*x*/, $size[1]*0.975/*y*/, $black, dirname(__FILE__) . '/font.ttf', $this->QRText);
+            /* --- ukladani obrazku do streamu bez zapisu do docasneho souboru  */
+            ob_start();
+            \QRcode::png((string)$this, null/*do streamu*/, QR_ECLEVEL_L/*uroven korence chyb*/, $this->QRSquareSize/*velikost pixelu*/, 8/*velikost okraje*/);
+            $imageString = ob_get_contents();
+            ob_end_clean();
+            $im = imagecreatefromstring($imageString);
+            $size = getimagesizefromstring($imageString);
+            $black = imagecolorallocate($im, 0, 0, 0);
 
-        //neposilame obrazek primo do prihlizece, ale ulozime do stringu a ten vratime
-        ob_start();
-        imagepng($im);
-        $imageStringFinal = ob_get_contents();
-        ob_end_clean();
+            // Print Text On Image
+            //putenv('GDFONTPATH=' . realPath('fonts'));
+            //text se pise do spodniho okraje kousek od leveho spodniho rohu
+            imagettftext($im, $this->QRSquareSize*3.7/*fontsize*/, 0, $size[0]/6/*x*/, $size[1]*0.975/*y*/, $black, dirname(__FILE__) . '/font.ttf', $this->QRText);
 
-        imagedestroy($im);
-        //unlink($filename);
+            //neposilame obrazek primo do prihlizece, ale ulozime do stringu a ten vratime
+            ob_start();
+            imagepng($im);
+            $imageStringFinal = ob_get_contents();
+            ob_end_clean();
 
+            imagedestroy($im);
+        }
+        else { //bez popisu
+            ob_start();
+            \QRcode::png((string)$this, null/*do streamu*/, QR_ECLEVEL_L/*uroven korence chyb*/, $this->QRSquareSize/*velikost pixelu*/, 8/*velikost okraje*/);
+            $imageStringFinal = ob_get_contents();
+            ob_end_clean();
+        }
         return $imageStringFinal;
     }
 }
