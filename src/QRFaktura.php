@@ -1116,7 +1116,7 @@ class QRFaktura
                 $textStartY = $size[1]*0.970;
                 $fontSize = $this->QRSquareSize*5;
             }
-            imagettftext($im, $fontSize/*fontsize*/, 0, $size[0]/6/*x*/, $textStartY/*y*/, $black, dirname(__FILE__) . '/font.ttf', $this->QRText);
+            imagettftext($im, $fontSize/*fontsize*/, 0, $size[0]/6/*x*/, $textStartY/*y*/, $black, dirname(__FILE__) . DIRECTORY_SEPARATOR . 'font.ttf', $this->QRText);
 
             //print lines on image
             $linemargin = $size[0]*0.06; //zacatky a konce car od okraju obrazku
@@ -1131,13 +1131,13 @@ class QRFaktura
             imageline($im, 0 + $linemargin, $size[1] - $linemargin, 0 + $linemargin*2.0, $size[1] - $linemargin, $black);
             //horizontalni cara dole vpravo od napisu
             if ($this->QRSquareSize > 18) {
-                $rightLineStartX = $size[0]/1.5 + $linemargin; //pokud uz je moc velky text, musime pravou caru zkratit
+                $rightLineStartX = $size[0]/1.4 + $linemargin; //pokud uz je moc velky text, musime pravou caru zkratit
             }
             else if ($this->QRSquareSize > 14) {
-                $rightLineStartX = $size[0]/1.6 + $linemargin; //pokud uz je moc velky text, musime pravou caru zkratit
+                $rightLineStartX = $size[0]/1.5 + $linemargin; //pokud uz je moc velky text, musime pravou caru zkratit
             }
             else {
-                $rightLineStartX = $size[0]/1.7 + $linemargin;
+                $rightLineStartX = $size[0]/1.55 + $linemargin;
             }
             imageline($im, $rightLineStartX, $size[1] - $linemargin, $size[0] - $linemargin, $size[1] - $linemargin, $black);
 
