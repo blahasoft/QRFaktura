@@ -1092,7 +1092,7 @@ class QRFaktura
 
             /* --- ukladani obrazku do streamu bez zapisu do docasneho souboru  */
             ob_start();
-            \QRcode::png((string)$this, null/*do streamu*/, QR_ECLEVEL_L/*uroven korence chyb*/, $this->QRSquareSize/*velikost pixelu*/, 8/*velikost okraje*/);
+            \QRcode::png((string)$this, null/*do streamu*/, QR_ECLEVEL_L/*uroven korence chyb*/, $this->QRSquareSize/*velikost pixelu*/, 10/*velikost okraje*/);
             $imageString = ob_get_contents();
             ob_end_clean();
             $im = imagecreatefromstring($imageString);
@@ -1102,7 +1102,45 @@ class QRFaktura
             // Print Text On Image
             //putenv('GDFONTPATH=' . realPath('fonts'));
             //text se pise do spodniho okraje kousek od leveho spodniho rohu
-            imagettftext($im, $this->QRSquareSize*3.7/*fontsize*/, 0, $size[0]/6/*x*/, $size[1]*0.975/*y*/, $black, dirname(__FILE__) . '/font.ttf', $this->QRText);
+            if ($this->QRSquareSize > 15) {
+                //pokud uz je moc velky obrazek, musime text posunout dolu a mensit
+                $textStartY = $size[1]*0.98;
+                $fontSize = $this->QRSquareSize*4;
+            }
+            else if ($this->QRSquareSize > 12) {
+                //pokud uz je moc velky obrazek, musime text posunout dolu a mensit
+                $textStartY = $size[1]*0.975;
+                $fontSize = $this->QRSquareSize*4.5;
+            }
+            else {
+                $textStartY = $size[1]*0.970;
+                $fontSize = $this->QRSquareSize*5;
+            }
+            imagettftext($im, $fontSize/*fontsize*/, 0, $size[0]/6/*x*/, $textStartY/*y*/, $black, dirname(__FILE__) . '/font.ttf', $this->QRText);
+
+            //print lines on image
+            $linemargin = $size[0]*0.06; //zacatky a konce car od okraju obrazku
+
+            //horizontalni cara nahore
+            imageline($im, 0 + $linemargin, 0 + $linemargin, $size[0] - $linemargin, 0 + $linemargin, $black);
+            //vertikalni cara vlevo
+            imageline($im, 0 + $linemargin, 0 + $linemargin, 0 + $linemargin, $size[1] - $linemargin, $black);
+            //vertikalni cara vpravo
+            imageline($im, $size[0] - $linemargin, 0 + $linemargin , $size[0] - $linemargin, $size[1] - $linemargin, $black);
+            //horizontalni cara dole vlevo od napisu
+            imageline($im, 0 + $linemargin, $size[1] - $linemargin, 0 + $linemargin*2.0, $size[1] - $linemargin, $black);
+            //horizontalni cara dole vpravo od napisu
+            if ($this->QRSquareSize > 18) {
+                $rightLineStartX = $size[0]/1.5 + $linemargin; //pokud uz je moc velky text, musime pravou caru zkratit
+            }
+            else if ($this->QRSquareSize > 14) {
+                $rightLineStartX = $size[0]/1.6 + $linemargin; //pokud uz je moc velky text, musime pravou caru zkratit
+            }
+            else {
+                $rightLineStartX = $size[0]/1.7 + $linemargin;
+            }
+            imageline($im, $rightLineStartX, $size[1] - $linemargin, $size[0] - $linemargin, $size[1] - $linemargin, $black);
+
 
             //neposilame obrazek primo do prihlizece, ale ulozime do stringu a ten vratime
             ob_start();
