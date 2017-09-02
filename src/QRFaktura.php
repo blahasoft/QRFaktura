@@ -227,7 +227,7 @@ class QRFaktura
         $this->setAmount(trim($arr['NTB']), 'NTB', false, 18, 2, false);
         $this->setCC(trim($arr['CC']), 'CC', false);
         $this->setAmount(trim($arr['FX']), 'FX', false, 18, 3, false);
-        $this->setInt(trim($arr['FXA']), 'FXA', false, 5, '1', false);
+        $this->setInt(trim($arr['FXA']), 'FXA', false, 5, '', false);
         $this->setText(trim($arr['X-SW']), 'X-SW', false, 30, false);
         $this->setAccount(trim($arr['ACC']), 'ACC', false, false);
         $this->setChecksum(trim($arr['CRC32']), 'CRC32', false);
@@ -489,7 +489,8 @@ class QRFaktura
     {
         if (!isset($typ) || is_null($typ) || strlen($typ) == 0) //promenna je prazdna
         {
-            $this->keys['TP'] = $this->rangeTP['0']; //nastavime 0
+            //$this->keys['TP'] = $this->rangeTP['0']; //nastavime 0
+            //nenastavujeme nic, protoze defaultni hodnota je zrejma ze specifikace
         }
         else if (!in_array($typ, $this->rangeTP)) { //mimo rozsah
             $this->errDesc[] = array(self::ERR_CODE=>self::ERR_CODE_BAD_FORMAT, self::ERR_DESC=>'Hodnota TP='.$typ.' nemá požadovanou hodnotu z množiny hodnot');
@@ -509,7 +510,8 @@ class QRFaktura
     {
         if (!isset($typ) || is_null($typ) || strlen($typ) == 0) //promenna je prazdna
         {
-            $this->keys['TD'] = $this->rangeTD['9']; //nastavime 9
+            //$this->keys['TD'] = $this->rangeTD['9']; //nastavime 9
+            //nenastavujeme nic, protoze defaultni hodnota je zrejma ze specifikace
         }
         else if (!in_array($typ, $this->rangeTD)) { //mimo rozsah
             $this->errDesc[] = array(self::ERR_CODE=>self::ERR_CODE_BAD_FORMAT, self::ERR_DESC=>'Hodnota TD='.$typ.' nemá požadovanou hodnotu z množiny hodnot');
@@ -528,7 +530,8 @@ class QRFaktura
     {
         if (!isset($typ) || is_null($typ) || strlen($typ) == 0) //promenna je prazdna
         {
-            $this->keys['SA'] = $this->rangeSA['0']; //nastavime 0
+            //$this->keys['SA'] = $this->rangeSA['0']; //nastavime 0
+            //nenastavujeme nic, protoze defaultni hodnota je zrejma ze specifikace
         }
         else if (!in_array($typ, $this->rangeSA)) { //mimo rozsah
             $this->errDesc[] = array(self::ERR_CODE=>self::ERR_CODE_BAD_FORMAT, self::ERR_DESC=>'Hodnota SA='.$typ.' nemá požadovanou hodnotu z množiny hodnot');
@@ -552,7 +555,8 @@ class QRFaktura
         $len = 3;
         if (!isset($mena) || is_null($mena) || strlen($mena) == 0) //promenna je prazdna
         {
-            $this->keys[$key] = 'CZK'; //nastavime CZK
+            //$this->keys[$key] = 'CZK'; //nastavime CZK
+            //nenastavujeme nic, protoze defaultni hodnota je zrejma ze specifikace
         }
         else if (strlen($mena) != $len) {
             $this->errDesc[] = array(self::ERR_CODE=>self::ERR_CODE_TOO_LONG, self::ERR_DESC=>'Hodnota '.$key.'='.$mena.' neobsahuje právě '.$len.' znaky');
@@ -1130,7 +1134,7 @@ class QRFaktura
             //horizontalni cara dole vlevo od napisu
             imageline($im, 0 + $linemargin, $size[1] - $linemargin, 0 + $linemargin*2.0, $size[1] - $linemargin, $black);
             //horizontalni cara dole vpravo od napisu
-            if ($this->QRSquareSize > 18) {
+            /*if ($this->QRSquareSize > 18) {
                 $rightLineStartX = $size[0]/1.4 + $linemargin; //pokud uz je moc velky text, musime pravou caru zkratit
             }
             else if ($this->QRSquareSize > 14) {
@@ -1138,7 +1142,10 @@ class QRFaktura
             }
             else {
                 $rightLineStartX = $size[0]/1.55 + $linemargin;
-            }
+            }*/
+            //zacatek horizontalni cary nepocitame podle velikosti fontu, protoze to zlobilo
+            //takze se zacatek spocte natvrdo, cara bude kratka a funguje to vzdy
+            $rightLineStartX = $size[0] - ($linemargin*2.0);
             imageline($im, $rightLineStartX, $size[1] - $linemargin, $size[0] - $linemargin, $size[1] - $linemargin, $black);
 
 
